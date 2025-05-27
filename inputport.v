@@ -1,34 +1,31 @@
 module inputport #(
     parameter int DATA_WIDTH = 64,
-    parameter int FIFO_DEPTH = 5,
-    parameter int FLIT_WIDRH = 76
+    parameter int FIFO_NUM = 5,
+    parameter int FLIT_WIDTH = 80
 ) (
-    input  logic                  clk,
-    input  logic                  rst,
-    input  logic [DATA_WIDTH-1:0] Flit_in,       // 输入数据
-    input  logic [FIFO_DEPTH-1:0]            vcx_in,           //输入VCx
-    input  logic [2:0]            nxt_hop,       //RC输入的路由信息
+    input  logic                          clk,
+    input  logic                          rst,
+    input  logic [FLIT_WIDTH-1:0]         Flit_in,       // 输入数据
+    input  logic [FIFO_NUM-1:0]           vcx_in,        //输入VCx
 
-    output logic             sw_req,        // 送给sw_alloc的请求信号
-    output logic [FIFO_DEPTH-1:0]           vcx_out,
-    output logic [DATA_WIDTH-1:0] Flit_out,      // 输出到crossbar的数据
-    output logic [FIFO_DEPTH-1:0]     port_req       // 每个虚拟通道的请求信号
-); //BW
+    output logic [FIFO_NUM-1:0]           buffer_out,    // 输出到crossbar的数据
+    output logic [$clog2(FIFO_NUM)-1:0]   vc_req         // 仲裁获胜虚拟通道
+);
 
-    logic [DATA_WIDTH-1:0] fifo_dout   [FIFO_DEPTH-1:0];
-    logic                  fifo_empty  [FIFO_DEPTH-1:0];
-    logic                  fifo_full   [FIFO_DEPTH-1:0];
-    logic                  fifo_rd_en  [FIFO_DEPTH-1:0];
-    logic                  fifo_wr_en  [FIFO_DEPTH-1:0];
-    logic                  almost_empty [FIFO_DEPTH-1:0];
-    logic                  almost_full  [FIFO_DEPTH-1:0];
+    logic [FLIT_WIDTH-1:0] fifo_dout  [0:FIFO_NUM-1];
+    logic [FIFO_NUM-1:0]   fifo_empty   ;
+    logic [FIFO_NUM-1:0]   fifo_full    ;
+    logic [FIFO_NUM-1:0]   fifo_rd_en   ;
+    logic [FIFO_NUM-1:0]   fifo_wr_en   ;
+    logic [FIFO_NUM-1:0]   almost_empty ;
+    logic [FIFO_NUM-1:0]   almost_full  ;
 
     // 实例化5个FIFO
     generate
-        for (genvar i = 0; i < FIFO_DEPTH; i = i + 1) begin: gen_fifo
+        for (genvar i = 0; i < FIFO_NUM; i = i + 1) begin: gen_fifo
             simple_fifo #(
                 .DATA_WIDTH(DATA_WIDTH),
-                .DEPTH(FIFO_DEPTH)
+                .DEPTH(4)
             ) u_fifo (
                 .clk(clk),
                 .rst(rst),
@@ -44,7 +41,7 @@ module inputport #(
         end
     endgenerate
 
-    // 写入FIFO
+    // 写入FIFO vcx仲裁
     always @(posedge clk or reset)begin
         if(!reset)
             fifo_wr_en <= 0;
@@ -60,50 +57,20 @@ module inputport #(
             vc_req <= !almost_empty;
     end
 
-    rr_arbiter u_rr_arbiter(
+    //读出FIFO 轮询仲裁
+    reg [FIFO_NUM-1:0] grant;
+    rr_arbiter u_rr_arbiter#(
+        .N(FIFO_NUM)
+    )(
         .clk(clk),
         .rst(rst),
         .req(vc_req),
         .grant(grant),
-        .grant_idx(grant_idx)
+        .grant_idx(vc_req)
     )
-
-    wire [2:0] id_x;
-    wire [2:0] id_y;
-    wire [2:0] dst_x;
-    wire [2:0] dst_y;
-    assign id_x = Flit_in[7:9];
-    assign id_y = Flit_in[10:12];
-    assign dst_x = Flit_in[7:9];
-    assign dst_y = Flit_in[10:12];
-
-    reg [2:0] route_sel;
-    router_calc u_router_calc(
-        .id_x(id_x),
-        .id_y(id_y),
-        .dst_x(dst_x),
-        .dst_y(dst_y),
-        .route_sel(route_sel)
-    )
-    
-
-
-    // 端口请求信号
-    always_comb begin
-        for (int i = 0; i < FIFO_DEPTH; i++) begin
-            port_req[i] = !fifo_empty[i];
-        end
-    end
-
-
-
-
-
-    // sw_req信号：只要有任一VC非空即可请求
-    assign sw_req = |port_req;
 
     // 输出数据选择
-    assign Flit_out = fifo_dout[vc_sel];
+    assign buffer_out = fifo_dout[vc_req];
 
 
 endmodule
