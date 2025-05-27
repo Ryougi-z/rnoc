@@ -10,7 +10,7 @@ module vc_alloc #(
     input  logic [PORT_NUM-1:0]    req,           // 输入端口请求
     input  logic [2:0]             route_sel[PORT_NUM-1:0], // 每个输入端口的目标输出端口
     input  logic [VC_NUM-1:0]      vc_busy[PORT_NUM-1:0],   // 每个输出端口下VC的占用情况
-    output logic [VC_NUM-1:0]      vc_grant[PORT_NUM-1:0],  // 每个输入端口分配到的VC one-hot
+    output logic [VC_NUM-1:0]      vc_grant[PORT_NUM-1:0],  // 分配到的VC one-hot
     output logic [$clog2(VC_NUM)-1:0] vc_idx[PORT_NUM-1:0]     // 分配到的VC编号
 );
     integer i, j;

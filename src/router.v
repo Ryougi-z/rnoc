@@ -6,6 +6,7 @@ Flit type(2bit) nxt_hop(5bit) dst_x(2bit) dst_y(2bit) VCx(5bit) data(64bit)
 module router #(
     parameter int x_size = 4,
     parameter int y_size = 4,
+    parameter int VC_NUM = 5,
     parameter int DATA_WIDRH = 64,
     parameter int FIFO_NUM = 5,
     parameter int FLIT_WIDTH = 80
@@ -20,13 +21,14 @@ module router #(
     input  logic [FLIT_WIDTH-1:0] local_in,
     input  logic [$clog2(x_size)-1:0] id_x,      //network定义
     input  logic [$clog2(y_size)-1:0] id_y,
+    input  logic [VC_NUM-1:0] vc_busy_in[PORT_NUM-1:0],
 
     output logic [FLIT_WIDTH-1:0] xp_out,
     output logic [FLIT_WIDTH-1:0] xm_out,
     output logic [FLIT_WIDTH-1:0] yp_out,
     output logic [FLIT_WIDTH-1:0] ym_out,
-    output logic [FLIT_WIDTH-1:0] local_out，
-
+    output logic [FLIT_WIDTH-1:0] local_out,
+    output  logic [VC_NUM-1:0] vc_busy_out[PORT_NUM-1:0]
 );
     // 信号线定义
     logic [FLIT_WIDTH-1:0] inport_data [0:4];
@@ -80,28 +82,27 @@ module router #(
         .route_sel(route_sel)
     );
 
-    genvar k;
-    generate
-        for (k = 0; k < 5; k = k + 1) begin: gen_dst
-            assign dst_x[k] = inport_data[k][9:7];
-            assign dst_y[k] = inport_data[k][12:10];
-        end
-    endgenerate
-
     //虚拟通道分配(VA)
+    reg [VC_NUM-1:0] vc_grant_out[4:0];
+    reg [$clog2(VC_NUM)-1:0] vc_idx_out[4:0];
     reg [2:0] vcx_out[0:4];
     vc_alloc u_vc_alloc(
         //input
         .clk(clk),
         .rst(rst),
         .route_sel(route_sel),
-        .req(),
-
+        .req('b10000),
+        .vc_busy(vc_busy_in),
         //output
-        .state(),
-        .vcx_out(vcx_out),
+        .vc_grant(vc_grant_out),
+        .vc_idx(vc_idx_out)
+    )
 
-
+    controlUnit u_controlUnit(
+        .clk(clk),
+        .rst(rst),
+        .vc_req(vc_req),
+        .vc_busy(vc_busy_out)
     )
 
     //开关分配(SA)
@@ -110,7 +111,7 @@ module router #(
     ) u_sw_alloc (
         .clk(clk),
         .rst(rst),
-        .req(req),
+        .req('b10000'),
         .route_sel(route_sel),
         .grant(grant)
     );

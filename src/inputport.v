@@ -9,7 +9,7 @@ module inputport #(
     input  logic [FIFO_NUM-1:0]           vcx_in,        //输入VCx
 
     output logic [FIFO_NUM-1:0]           buffer_out,    // 输出到crossbar的数据
-    output logic [$clog2(FIFO_NUM)-1:0]   vc_req         // 仲裁获胜虚拟通道
+    output logic [$clog2(FIFO_NUM)-1:0]   vc_grant         // 仲裁获胜虚拟通道
 );
 
     logic [FLIT_WIDTH-1:0] fifo_dout  [0:FIFO_NUM-1];
@@ -49,12 +49,12 @@ module inputport #(
             fifo_wr_en <= vcx_in;
     end
 
-    reg [4:0]vc_req;
+    reg [4:0]vc_grant;
     always @(posedge clk or reset)begin
         if(!reset)
             almost_empty <= 0;
         else
-            vc_req <= !almost_empty;
+            vc_grant <= !almost_empty;
     end
 
     //读出FIFO 轮询仲裁
@@ -64,13 +64,13 @@ module inputport #(
     )(
         .clk(clk),
         .rst(rst),
-        .req(vc_req),
+        .req(vc_grant),
         .grant(grant),
-        .grant_idx(vc_req)
+        .grant_idx(vc_grant)
     )
 
     // 输出数据选择
-    assign buffer_out = fifo_dout[vc_req];
+    assign buffer_out = fifo_dout[vc_grant];
 
 
 endmodule

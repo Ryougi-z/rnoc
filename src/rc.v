@@ -1,11 +1,11 @@
 module rc #(
-    parameter int x_size = 4,
-    parameter int y_size = 4
+    parameter int X_WIDTH = 2,
+    parameter int Y_WIDTH = 2
 ) (
-    input logic [$clog2(x_size)-1:0] id_x,
-    input logic [$clog2(y_size)-1:0] id_y,
-    input logic [2:0] dst_x [0:4],
-    input logic [2:0] dst_y [0:4],
+    input logic [X_WIDTH-1:0] id_x,
+    input logic [Y_WIDTH-1:0] id_y,
+    input logic [X_WIDTH:0] dst_x [0:4],
+    input logic [Y_WIDTH:0] dst_y [0:4],
     output logic [2:0] route_sel [0:4]
 );
 

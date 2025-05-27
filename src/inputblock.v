@@ -6,8 +6,8 @@ module inputblock #(
     parameter int FIFO_NUM = 5,
     parameter int FLIT_WIDRH = 80
 ) (
-    input  logic                        clk            ,
-    input  logic                        rst            ,
+    input  logic                        clk,
+    input  logic                        rst,
     input  logic [DATA_WIDTH-1:0]       Flit_in [0:4]  ,   // 五个方向输入
     output logic [$clog2(FIFO_NUM)-1:0] vc_req [0:4]   ,
     output logic [DATA_WIDTH-1:0]       buffer_out[0:4],   // 五个方向输出
