@@ -1,23 +1,29 @@
 # rnoc
 Verilog Code for NoC
 
-# Configuration
-![NoC Configuration](./pic/parameter.png)
+## Fabric
+```
+12 13 14 15
+8  9  10 11
+4  5  6  7
+0  1  2  3
+```
 
-# Pipeline
-Buffer --> Router Switch --> Crossbar
+## noc1(src1) Configuration -----Under Revision
+### Flit Format
+|0-1   |    2-6    |   7-8  | 9-10  |11-74|
+| :-: | :-: | :-: | :-: | :-: |
+|FlitType| Next_Port| X_Des| Y_Des |DATA
 
-# Flit Format
-0-1       2-6       7-8   9-10  11-74
-Tail/head Next_Port X_Des Y_Des DATA
+## noc2(src2) Configuration ------Down
+FIFO_Depth 5
+VC_NUM   2
 
-# Assumption
-message size = Flit size
+### Flit Format
+|35-33 | 7-4 | 3-0 |
+| :-: | :-: | :-: |
+|FlitType | SRC | DST |
 
-# Further
-1.接口信号
-2.调整流水分级
-3.完善VA机制 rr_arbiter
-4.接入总线   AXI -> CHI
-......
-处理器和内部流量区分VN?
+
+### PPA
+latency 3cycle/hop

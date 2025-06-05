@@ -1,4 +1,4 @@
-`include "define.h" 
+`include "defines.v"
 module rtcomp (
 	addr,
 	ivch,

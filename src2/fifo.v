@@ -1,4 +1,4 @@
-`include "defines.h" 
+`include "defines.v"
 module fifo (
 	idata,
 	odata,
@@ -19,7 +19,7 @@ input	[`DATAW:0]	idata;
 output	[`DATAW:0]	odata;
 
 input			wr_en;
-input			rd_en; 
+input			rd_en;
 
 output			empty;
 output			full;
@@ -37,9 +37,9 @@ integer	i;
 
 /* Write address */
 always @ (posedge clk) begin
-	if (rst_ == `Enable_) 
+	if (rst_ == `Enable_)
 		wr_addr	<= 0;
-	else if (set) 
+	else if (set)
 		if (wr_addr == `FIFO)
 			wr_addr	<= 0;
 		else
@@ -48,9 +48,9 @@ end
 
 /* Read address */
 always @ (posedge clk) begin
-	if (rst_ == `Enable_) 
+	if (rst_ == `Enable_)
 		rd_addr	<= 0;
-	else if (~empty & rd_en) 
+	else if (~empty & rd_en)
 		if (rd_addr == `FIFO)
 			rd_addr	<= 0;
 		else
@@ -59,11 +59,11 @@ end
 
 /* Data counter */
 always @ (posedge clk) begin
-	if (rst_ == `Enable_) 
+	if (rst_ == `Enable_)
 		d_cnt	<= 0;
-	else if (~full  & wr_en & ~(rd_en & ~empty)) 
+	else if (~full  & wr_en & ~(rd_en & ~empty))
 		d_cnt	<= d_cnt + 1;
-	else if (~empty & rd_en & ~wr_en) 
+	else if (~empty & rd_en & ~wr_en)
 		d_cnt	<= d_cnt - 1;
 end
 
@@ -78,10 +78,10 @@ assign	ordy	= ((`FIFO_P1 - d_cnt) >= `PKTLEN_P1) ? `Enable : `Disable;
 /* Memory I/O */
 assign	odata	= ~empty ? ram[rd_addr] : 0;
 always @ (posedge clk) begin
-	if (rst_ == `Enable_) 
+	if (rst_ == `Enable_)
 		for (i = 0; i < `FIFO_P1; i = i + 1)
 			ram[i]	<= 0;
-	else if (set) 
+	else if (set)
 		ram[wr_addr]	<= idata;
 end
 
