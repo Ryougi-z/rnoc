@@ -1830,6 +1830,7 @@ begin
         end
         #(STEP)
         n0_ivalid_p0 <= `Disable;
+        n0_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -1872,6 +1873,7 @@ begin
         end
         #(STEP)
         n1_ivalid_p0 <= `Disable;
+        n1_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -1914,6 +1916,7 @@ begin
         end
         #(STEP)
         n2_ivalid_p0 <= `Disable;
+        n2_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -1956,6 +1959,7 @@ begin
         end
         #(STEP)
         n3_ivalid_p0 <= `Disable;
+        n3_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -1998,6 +2002,7 @@ begin
         end
         #(STEP)
         n4_ivalid_p0 <= `Disable;
+        n4_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2040,6 +2045,7 @@ begin
         end
         #(STEP)
         n5_ivalid_p0 <= `Disable;
+        n5_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2082,6 +2088,7 @@ begin
         end
         #(STEP)
         n6_ivalid_p0 <= `Disable;
+        n6_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2124,6 +2131,7 @@ begin
         end
         #(STEP)
         n7_ivalid_p0 <= `Disable;
+        n7_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2166,6 +2174,7 @@ begin
         end
         #(STEP)
         n8_ivalid_p0 <= `Disable;
+        n8_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2208,6 +2217,7 @@ begin
         end
         #(STEP)
         n9_ivalid_p0 <= `Disable;
+        n9_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2250,6 +2260,7 @@ begin
         end
         #(STEP)
         n10_ivalid_p0 <= `Disable;
+        n10_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2292,6 +2303,7 @@ begin
         end
         #(STEP)
         n11_ivalid_p0 <= `Disable;
+        n11_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2334,6 +2346,7 @@ begin
         end
         #(STEP)
         n12_ivalid_p0 <= `Disable;
+        n12_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2376,6 +2389,7 @@ begin
         end
         #(STEP)
         n13_ivalid_p0 <= `Disable;
+        n13_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2418,6 +2432,7 @@ begin
         end
         #(STEP)
         n14_ivalid_p0 <= `Disable;
+        n14_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
@@ -2460,6 +2475,7 @@ begin
         end
         #(STEP)
         n15_ivalid_p0 <= `Disable;
+        n15_idata_p0 <= `DATAW_P1'b0;
 end
 endtask
 
