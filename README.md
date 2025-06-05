@@ -26,4 +26,4 @@ VC_NUM   2
 
 
 ### PPA
-latency 3cycle/hop
+latency 4cycle/hop
