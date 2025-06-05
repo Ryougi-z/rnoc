@@ -9,7 +9,7 @@ Verilog Code for NoC
 0  1  2  3
 ```
 
-## noc1(src1) Configuration -----Under Revision
+## noc1(src1) Configuration -----Under Revisions
 ### Flit Format
 |0-1   |    2-6    |   7-8  | 9-10  |11-74|
 | :-: | :-: | :-: | :-: | :-: |
